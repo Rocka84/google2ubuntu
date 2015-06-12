@@ -29,6 +29,8 @@ try:
             field = line.split('=')
             if field[0] == 'hotword':  
                 hotword = field[1].replace('"','')
+            if field[0] == 'key':  
+                key = field[1].replace('"','')
         f.close()
 except Exception:
     print "Error loading", config_file
@@ -44,29 +46,22 @@ f.close()
 try:
     # Send request to Google
     fail = 'req'
-    req = urllib2.Request('https://www.google.com/speech-api/v1/recognize?xjerr=1&client=chromium&lang='+lang, data=data, headers={'Content-type': 'audio/x-flac; rate=16000'})
+    req = urllib2.Request('https://www.google.com/speech-api/v2/recognize?xjerr=1&client=chromium&key=' + key +'&lang='+lang, data=data, headers={'Content-type': 'audio/x-flac; rate=16000'})
     
     fail = 'ret'
     # Return request
     ret = urllib2.urlopen(req)
     
-    # Google translate API sometimes returns lists of phrases. We'll join them all up into a single phrase again
-    phrase = ''
-    t = ret.read().split('\n')
-    t.remove('')
-    for i in t:
-        s = json.loads(i)
-        if len(s['hypotheses']) > 0:
-            phrase = phrase + s['hypotheses'][0]['utterance'] + ' '
-    print "Recognition: "+phrase
-        
+    # Google translate API sometimes returns lists of phrases, thus we choose the first item
+    text = ret.read()
+    text = text.split('"transcript":"',2)[1].split('"',2)[0]
+            
     fail = 'parse'
-    # Parse
-    #text=json.loads(d)['hypotheses'][0]['utterance']
     
     print "hotword:", hotword
-    print "detected:", phrase   
-    if phrase.lower().count(hotword.lower()) > 0: 
+    print "detected:", text   
+    
+    if text == hotword: 
         os.system('python ' + p + '/google2ubuntu.py')
 
 except Exception:
