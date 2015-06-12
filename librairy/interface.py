@@ -86,6 +86,8 @@ class interface():
             text = response.split('"transcript":"',2)[1].split('"',2)[0]
             # parsing du retour
             #text=json.load(response)
+            reload(sys) 
+            sys.setdefaultencoding("utf-8")
             os.system('echo "'+text.encode("utf-8")+'" > /tmp/g2u_result_'+self.PID)
             
             # parsing du résultat pour trouver l'action
