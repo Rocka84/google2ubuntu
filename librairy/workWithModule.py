@@ -27,12 +27,9 @@ class workWithModule():
             # Le mot de liaison peut être " à "
             sentence=text.lower()
             # oblige to put this .encode('ASCII', 'ignore') for french
-            print sentence
-            sentence = unicodedata.normalize('NFKD', sentence)
-            print sentence
+            sentence = unicodedata.normalize('NFKD', unicode(sentence, "utf8"))
             sentence=sentence.encode('ASCII', 'ignore')
-            print sentence
-            sentence=sentence.lower()  
+            sentence=sentence.lower()
             
             if sentence.count(linker) > 0:
                 param =(sentence.split(linker,1)[1]).encode("utf-8")

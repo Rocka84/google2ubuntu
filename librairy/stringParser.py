@@ -22,6 +22,7 @@ class stringParser():
             tree = ET.parse(File)
             root = tree.getroot()
             tp = ''
+            do = ''
             # si le mode dictée est activé
             if os.path.exists('/tmp/g2u_dictation'):
                 for entry in root.findall('entry'):
